@@ -13,7 +13,7 @@ let sandbox : sinon.SinonSandbox;
 let client: any;
 let subject: any;
 let httpClient: types.HttpClient;
-const clientParams: types.ClientOptions = {
+const clientParams: types.IClientOptions = {
   endpoint: "http://fake.endpoint.com/api",
   sumoApiId: "ID",
   sumoApiKey: "KEY"
@@ -44,14 +44,14 @@ describe("index.Client", () => {
   });
 
   describe("#job", () => {
-    const result: types.Job = {
+    const result: types.IJob = {
       status: 200,
       id: "SAMPLE JOB ID",
       code: "",
       message: "Success"
     };
 
-    const params: types.JobOptions = {
+    const params: types.IJobOptions = {
       query: "ERROR",
       from: "2017-01-01",
       to: "2017-01-02",
@@ -80,7 +80,7 @@ describe("index.Client", () => {
   });
 
   describe("#status", () => {
-    const result: types.Status = {
+    const result: types.IStatus = {
       state: "DONE GATHERING RESULTS",
       messageCount: 1,
       histogramBuckets: [],
@@ -105,7 +105,7 @@ describe("index.Client", () => {
   });
 
   describe("#messages", () => {
-    const result: types.Messages = {
+    const result: types.IMessages = {
       fields: [],
       messages: []
     };
@@ -126,7 +126,7 @@ describe("index.Client", () => {
   });
 
   describe("#records", () => {
-    const result: types.Records = {
+    const result: types.IRecords = {
       fields: [],
       records: []
     };
