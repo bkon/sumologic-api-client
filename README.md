@@ -37,15 +37,15 @@ const jobId = "SAMPLE JOB ID";
 
 client
   .status(jobId)
-  .then((data) => console.log("Job status: " + JSON.stringify(data)));
+  .then((data) => console.log("Status: " + JSON.stringify(data)));
 
 client
   .messages(jobId)
-  .then((data) => console.log("Job data: " + JSON.stringify(data)));
+  .then((data) => console.log("Messages: " + JSON.stringify(data)));
 
 client
   .records(jobId)
-  .then((data) => console.log("Job data: " + JSON.stringify(data)));
+  .then((data) => console.log("Records: " + JSON.stringify(data)));
 
 client
   .delete(jobId);

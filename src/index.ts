@@ -1,67 +1,73 @@
+import * as qs from "query-string";
 import * as R from "ramda";
 import * as httpClient from "request-promise-native";
-import * as qs from "query-string";
 
 import * as types from "./types";
 
 export class Client {
   private httpClient: types.HttpClient;
-  private params: types.ClientOptions;
+  private params: types.IClientOptions;
 
-  constructor(httpClient: types.HttpClient, params: types.ClientOptions) {
+  constructor(httpClient: types.HttpClient, params: types.IClientOptions) {
     this.httpClient = httpClient;
     this.params = params;
   }
 
-  job(params: types.JobOptions): PromiseLike<types.Job> {
+  public job(params: types.IJobOptions): PromiseLike<types.IJob> {
     return this.httpClient.post(this.options({
-      uri: "/search/jobs",
-      body: params
+      body: params,
+      uri: "/search/jobs"
     }));
   }
 
-  status(id: string): PromiseLike<types.Status> {
+  public status(id: string): PromiseLike<types.IStatus> {
     return this.httpClient.get(this.options({ uri: `/search/jobs/${id}` }));
   }
 
-  messages(id: string, params: types.PaginationOptions): PromiseLike<types.Messages> {
+  public messages(
+    id: string,
+    params: types.IPaginationOptions
+  ): PromiseLike<types.IMessages> {
     const query = this.paginationQuery(params);
     return this.httpClient.get(this.options({
       uri: `/search/jobs/${id}/messages?${query}`
     }));
   }
 
-  records(id: string, params: types.PaginationOptions): PromiseLike<types.Records> {
+  public records(
+    id: string,
+    params: types.IPaginationOptions
+  ): PromiseLike<types.IRecords> {
     const query = this.paginationQuery(params);
     return this.httpClient.get(this.options({
       uri: `/search/jobs/${id}/records?${query}`
     }));
   }
 
-  delete(id: string): PromiseLike<void> {
+  public delete(id: string): PromiseLike<void> {
     return this.httpClient.delete(this.options({ uri: `/search/jobs/${id}` }));
   }
 
-  private paginationQuery(params: types.PaginationOptions): string {
+  private paginationQuery(params: types.IPaginationOptions): string {
     return qs.stringify(params);
   }
 
-  private options(options: types.HttpCallOptions): types.HttpClientOptions {
+  private options(options: types.IHttpCallOptions): types.HttpClientOptions {
     const defaultOptions = {
       auth: {
-        user: this.params.sumoApiId,
-        pass: this.params.sumoApiKey
+        pass: this.params.sumoApiKey,
+        user: this.params.sumoApiId
       },
-      json: true,
-      jar: true
+      jar: true,
+      json: true
     };
 
     return R.pipe<
-      types.HttpCallOptions,
-      R.Nested<types.HttpCallOptions>,
+      types.IHttpCallOptions,
+      R.Nested<types.IHttpCallOptions>,
       types.HttpClientOptions
     >(
-      R.evolve<types.HttpCallOptions>(
+      R.evolve<types.IHttpCallOptions>(
         { uri: R.concat(this.params.endpoint) }
       ),
       R.merge(defaultOptions)
@@ -69,6 +75,7 @@ export class Client {
   }
 }
 
-const client = (params: types.ClientOptions): Client => new Client(httpClient, params)
+const client = (params: types.IClientOptions): Client =>
+  new Client(httpClient, params);
 
 export { client };

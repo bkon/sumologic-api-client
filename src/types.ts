@@ -1,17 +1,17 @@
 import request = require("request");
 import requestPromise = require("request-promise-native");
 
-export interface Job {
-  status: number,
-  id: string,
-  code: string,
-  message: string
+export interface IJob {
+  status: number;
+  id: string;
+  code: string;
+  message: string;
 }
 
-export interface HistogramBucket {
-  length: number,
-  count: number,
-  startTimestamp: number
+export interface IHistogramBucket {
+  length: number;
+  count: number;
+  startTimestamp: number;
 }
 
 // Neither structure is specified at
@@ -19,61 +19,61 @@ export interface HistogramBucket {
 export type Error = any;
 export type Warning = any;
 
-export interface Status {
-  state: string,
-  messageCount: number,
-  histogramBuckets: HistogramBucket[],
-  pendingErrors: Error[],
-  pendingWarnings: Warning[],
-  recordCount: number
+export interface IStatus {
+  state: string;
+  messageCount: number;
+  histogramBuckets: IHistogramBucket[];
+  pendingErrors: Error[];
+  pendingWarnings: Warning[];
+  recordCount: number;
 }
 
-export interface Field {
-  name: string,
-  fieldType: string,
-  keyField: boolean
+export interface IField {
+  name: string;
+  fieldType: string;
+  keyField: boolean;
 }
 
-export interface Message {
-  map: { [key:string]: string }
+export interface IMessage {
+  map: { [key: string]: string };
 }
 
-export interface Messages {
-  fields: Field[],
-  messages: Message[]
+export interface IMessages {
+  fields: IField[];
+  messages: IMessage[];
 }
 
-export interface Records {
-  fields: Field[],
-  records: Message[]
+export interface IRecords {
+  fields: IField[];
+  records: IMessage[];
 }
 
 export type HttpClient = request.RequestAPI<
   requestPromise.RequestPromise,
   requestPromise.RequestPromiseOptions,
   request.RequiredUriUrl
->
+>;
 
-export interface ClientOptions {
-  endpoint: string,
-  sumoApiId: string,
-  sumoApiKey: string
+export interface IClientOptions {
+  endpoint: string;
+  sumoApiId: string;
+  sumoApiKey: string;
 }
 
-export interface JobOptions {
-  query: string,
-  from: string,
-  to: string,
-  timeZone: string
+export interface IJobOptions {
+  query: string;
+  from: string;
+  to: string;
+  timeZone: string;
 }
 
-export interface HttpCallOptions {
-  uri: string,
-  body?: any
+export interface IHttpCallOptions {
+  uri: string;
+  body?: any;
 }
 
-export interface PaginationOptions {
-  offset: number,
+export interface IPaginationOptions {
+  offset: number;
   limit: number;
 }
 
