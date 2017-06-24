@@ -20,8 +20,8 @@ import * as Sumo from "sumologic-api-client";
 
 const client = Sumo.client({
   endpoint: "https://api.au.sumologic.com/api/v1",
-  user: "SUMO_API_ID",
-  pass: "SUMO_API_KEY"
+  sumoApiId: "SUMO_API_ID",
+  sumoApiKey: "SUMO_API_KEY"
 });
 
 client
