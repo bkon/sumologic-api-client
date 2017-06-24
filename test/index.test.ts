@@ -2,12 +2,14 @@ import "mocha";
 import * as chai from "chai";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
+import * as chaiAsPromised from "chai-as-promised";
 
 import * as request from "request-promise-native";
 import * as sumo from "../src/index";
 import * as types from "../src/types";
 
 chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 let sandbox : sinon.SinonSandbox;
 let client: any;
@@ -77,6 +79,10 @@ describe("index.Client", () => {
         }
       }));
     });
+
+    it("returns a promise resolving with the call data", () => {
+      return chai.expect(subject()).to.eventually.deep.equal(result)
+    })
   });
 
   describe("#status", () => {
@@ -102,6 +108,10 @@ describe("index.Client", () => {
         uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID"
       }))
     });
+
+    it("returns a promise resolving with the call data", () => {
+      return chai.expect(subject()).to.eventually.deep.equal(result);
+    });
   });
 
   describe("#messages", () => {
@@ -110,18 +120,46 @@ describe("index.Client", () => {
       messages: []
     };
 
-    beforeEach(() => {
-      subject = () => client().messages("JOB_ID", { limit: 10, offset: 0 });
-      sandbox
-        .stub(httpClient, "get")
-        .returns(Promise.resolve(result));
-    })
+    context("when pagination options are provided", () => {
+      beforeEach(() => {
+        subject = () => client().messages("JOB_ID", { limit: 10, offset: 0 });
+        sandbox
+          .stub(httpClient, "get")
+          .returns(Promise.resolve(result));
+      })
 
-    it("fetches the list of messages for this job", () => {
-      subject();
-      chai.expect(httpClient.get).to.have.been.calledWith(sinon.match({
-        uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID/messages?limit=10&offset=0"
-      }))
+      it("fetches the list of messages for this job", () => {
+        subject();
+        chai.expect(httpClient.get).to.have.been.calledWith(sinon.match({
+          uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID/messages?limit=10&offset=0"
+        }))
+      });
+
+      it("returns a prmise resolving with the call data", () => {
+        return chai.expect(subject()).to.eventually.deep.equal(result);
+      });
+    });
+
+    context("when pagination options are not provided", () => {
+      beforeEach(() => {
+        subject = () => client().messages("JOB_ID");
+        sandbox
+          .stub(httpClient, "get")
+          .returns(Promise.resolve(result));
+      })
+
+      it("fetches the list of messages for this job", () => {
+        subject();
+        chai
+          .expect(httpClient.get)
+          .to.have.been.calledWith(sinon.match({
+            uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID/messages?limit=10000&offset=0"
+          }))
+      });
+
+      it("returns a prmise resolving with the call data", () => {
+        return chai.expect(subject()).to.eventually.deep.equal(result);
+      });
     });
   });
 
@@ -131,18 +169,44 @@ describe("index.Client", () => {
       records: []
     };
 
-    beforeEach(() => {
-      subject = () => client().records("JOB_ID", { limit: 10, offset: 0 });
-      sandbox
-        .stub(httpClient, "get")
-        .returns(Promise.resolve(result));
-    })
+    context("when pagination options are provided", () => {
+      beforeEach(() => {
+        subject = () => client().records("JOB_ID", { limit: 10, offset: 0 });
+        sandbox
+          .stub(httpClient, "get")
+          .returns(Promise.resolve(result));
+      })
 
-    it("fetches the list of records for this job", () => {
-      subject();
-      chai.expect(httpClient.get).to.have.been.calledWith(sinon.match({
-        uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID/records?limit=10&offset=0"
-      }))
+      it("fetches the list of records for this job", () => {
+        subject();
+        chai.expect(httpClient.get).to.have.been.calledWith(sinon.match({
+          uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID/records?limit=10&offset=0"
+        }))
+      });
+
+      it("returns a prmise resolving with the call data", () => {
+        return chai.expect(subject()).to.eventually.deep.equal(result);
+      });
+    });
+
+    context("when pagination options are not provided", () => {
+      beforeEach(() => {
+        subject = () => client().records("JOB_ID");
+        sandbox
+          .stub(httpClient, "get")
+          .returns(Promise.resolve(result));
+      })
+
+      it("fetches the list of records for this job", () => {
+        subject();
+        chai.expect(httpClient.get).to.have.been.calledWith(sinon.match({
+          uri: "http://fake.endpoint.com/api/search/jobs/JOB_ID/records?limit=10000&offset=0"
+        }))
+      });
+
+      it("returns a prmise resolving with the call data", () => {
+        return chai.expect(subject()).to.eventually.deep.equal(result);
+      });
     });
   })
 

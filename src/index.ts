@@ -4,6 +4,11 @@ import * as httpClient from "request-promise-native";
 
 import * as types from "./types";
 
+const defaultPaginationOptions: types.IPaginationOptions = {
+  limit: 10000,
+  offset: 0
+};
+
 export class Client {
   private httpClient: types.HttpClient;
   private params: types.IClientOptions;
@@ -26,9 +31,12 @@ export class Client {
 
   public messages(
     id: string,
-    params: types.IPaginationOptions
+    params: Partial<types.IPaginationOptions> = defaultPaginationOptions
   ): PromiseLike<types.IMessages> {
-    const query = this.paginationQuery(params);
+    const query = this.paginationQuery(
+      R.merge(defaultPaginationOptions, params)
+    );
+
     return this.httpClient.get(this.options({
       uri: `/search/jobs/${id}/messages?${query}`
     }));
@@ -36,9 +44,12 @@ export class Client {
 
   public records(
     id: string,
-    params: types.IPaginationOptions
+    params: Partial<types.IPaginationOptions> = defaultPaginationOptions
   ): PromiseLike<types.IRecords> {
-    const query = this.paginationQuery(params);
+    const query = this.paginationQuery(
+      R.merge(defaultPaginationOptions, params)
+    );
+
     return this.httpClient.get(this.options({
       uri: `/search/jobs/${id}/records?${query}`
     }));
@@ -79,3 +90,4 @@ const client = (params: types.IClientOptions): Client =>
   new Client(httpClient, params);
 
 export { client };
+export * from "./types";
